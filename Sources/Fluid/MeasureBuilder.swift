@@ -38,6 +38,18 @@ public extension HStack {
     }
 }
 
+public extension VStack {
+    init(alignment: HorizontalAlignment = .center, spacing: CGFloat = 8, @MeasurableViewBuilder content: () -> Group) {
+        self = .init(alignment: alignment, spacing: spacing, content: content())
+    }
+}
+
+public extension ZStack {
+    init(alignment: Alignment = .center, @MeasurableViewBuilder content: () -> Group) {
+        self = .init(alignment: alignment, content: content())
+    }
+}
+
 @resultBuilder
 public enum MeasurableViewBuilder {
     public typealias Component = [Group.Child]

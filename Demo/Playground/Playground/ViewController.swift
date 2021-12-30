@@ -41,11 +41,18 @@ class View: UIView, ShrinkableNode, Measurable {
 class ViewController: UIViewController {
     var view1 = View(frame: CGRect(origin: .zero, size: .init(width: 800, height: 40)))
     var view2 = View(frame: CGRect(origin: .zero, size: .init(width: 200, height: 40)))
+    var view3 = View(frame: CGRect(origin: .zero, size: .init(width: 1000, height: 40)))
+
     var container = UIView()
     var node: MeasurableNode {
-        HStack(alignment: .top) {
-            self.view1
-            self.view2
+        ZStack(alignment: .topLeading) {
+            HStack(alignment: .bottom) {
+                self.view1
+                self.view2
+            }
+            HStack {
+                self.view3
+            }
         }
     }
 
@@ -53,8 +60,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         view1.max = 1000
         view2.max = 200
+        view3.max = 1000
         view1.backgroundColor = .systemPink
         view2.backgroundColor = .systemCyan
+        view3.backgroundColor = .systemTeal
         container.backgroundColor = UIColor(white: 0.93, alpha: 1)
         container.layer.borderWidth = 1
         container.layer.borderColor = UIColor.systemPink.cgColor
@@ -64,7 +73,7 @@ class ViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         let measured = node.layout(using: .init(width: view.frame.size.width, height: view.frame.size.height))
-        container.frame = .init(origin: .init(x: 0, y: 0),
+        container.frame = .init(origin: .init(x: 0, y: 40),
                                 size: measured.size)
         measured.render(in: container, origin: .zero)
     }
