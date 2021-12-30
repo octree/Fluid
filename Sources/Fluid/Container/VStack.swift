@@ -43,9 +43,9 @@ private struct VStackLayout {
     }
 
     private func deal(with nodes: [MeasuredNode]) -> Result {
-        let spacing = self.spacing * CGFloat(nodes.count - 1)
+        let totalSpacing = self.spacing * CGFloat(nodes.count - 1)
         var result = Result(size: .zero, children: [])
-        result.size.height = spacing
+        result.size.height = totalSpacing
         var minX: CGFloat = 0
         let firstRect = CGRect(origin: .zero, size: nodes.first!.size)
         var maxX: CGFloat = firstRect.maxX

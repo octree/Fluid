@@ -42,20 +42,24 @@ class ViewController: UIViewController {
     var view1 = View(frame: CGRect(origin: .zero, size: .init(width: 800, height: 40)))
     var view2 = View(frame: CGRect(origin: .zero, size: .init(width: 200, height: 40)))
     var view3 = View(frame: CGRect(origin: .zero, size: .init(width: 1000, height: 40)))
+    var view4 = UIView()
 
     var container = UIView()
     var node: MeasurableNode {
         VStack(alignment: .leading) {
             HStack(alignment: .bottom) {
                 self.view1
-                    .frame(height: 100, alignment: .top)
+//                    .frame(height: 100, alignment: .top)
                 self.view2
-                    .padding(.horizontal)
-                    .frame(width: 300, alignment: .topTrailing)
+//                    .padding(.horizontal)
+//                    .frame(width: 300, alignment: .topTrailing)
             }
             HStack {
                 self.view3
-                    .frame(minWidth: 800, maxWidth: .infinity, minHeight: 100, maxHeight: 200)
+//                    .frame(minWidth: 800, maxWidth: .infinity, minHeight: 100, maxHeight: 200)
+            }
+            Measure(AspectRatio(5)) { _, _ in
+                self.view4
             }
         }
     }
@@ -68,6 +72,7 @@ class ViewController: UIViewController {
         view1.backgroundColor = .systemPink
         view2.backgroundColor = .systemCyan
         view3.backgroundColor = .systemTeal
+        view4.backgroundColor = .systemOrange
         container.backgroundColor = UIColor(white: 0.93, alpha: 1)
         container.layer.borderWidth = 1
         container.layer.borderColor = UIColor.systemPink.cgColor
@@ -76,9 +81,10 @@ class ViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        let measured = node.layout(using: .init(width: view.frame.size.width, height: view.frame.size.height))
+        let measured = node.layout(using: .init(view.frame.size))
         container.frame = .init(origin: .init(x: 0, y: 40),
                                 size: measured.size)
         measured.render(in: container, origin: .zero)
+        print(view4.frame, measured.size, view.frame.size)
     }
 }
