@@ -27,16 +27,23 @@
 import UIKit
 
 extension Array where Element == CGFloat {
-    func shrinkTo(width: CGFloat) -> [CGFloat] {
-        let indices = self.indices.sorted { self[$0] < self[$1] }
+    func shrinkTo(width: CGFloat, unshrinkable: [CGFloat]) -> [CGFloat] {
+        assert(count == unshrinkable.count)
         var width = width
+        var shrinkable = [CGFloat](repeating: 0, count: count)
+        for (idx, val) in unshrinkable.enumerated() {
+            shrinkable[idx] = self[idx] - val
+            width -= val
+        }
+        width = Swift.max(0, width)
+        let indices = self.indices.sorted { shrinkable[$0] < shrinkable[$1] }
         var avg: CGFloat = 0
         var count = indices.count
-        var result = [CGFloat](repeating: 0, count: count)
+        var result = unshrinkable
 
         for index in indices {
             defer { count -= 1 }
-            let emptyLen = self[index] - avg
+            let emptyLen = shrinkable[index] - avg
             guard emptyLen > 0 else {
                 result[index] = avg
                 continue

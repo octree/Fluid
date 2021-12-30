@@ -45,7 +45,7 @@ class ViewController: UIViewController {
 
     var container = UIView()
     var node: MeasurableNode {
-        ZStack(alignment: .topLeading) {
+        VStack(alignment: .leading) {
             HStack(alignment: .bottom) {
                 self.view1
                 self.view2

@@ -88,7 +88,10 @@ private struct VStackLayout {
         }
         let beforeHeight = shrinkIndices.reduce(0) { $0 + collection[$1].size.height }
         let left = max(proposedSize.height - resumed + beforeHeight, 0)
-        let shrinked = shrinkIndices.map { collection[$0].size.height }.shrinkTo(width: left)
+        let unshrinkable = shrinkIndices.map {
+            (collection[$0] as? ShrinkContainer)?.unshrinkableSize.height ?? 0
+        }
+        let shrinked = shrinkIndices.map { collection[$0].size.height }.shrinkTo(width: left, unshrinkable: unshrinkable)
         zip(shrinkIndices, shrinked).forEach {
             let context = LayoutContext(width: context.proposedSize.width, height: $1)
             collection[$0] = layout(node: children[$0], context: context)

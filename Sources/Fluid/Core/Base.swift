@@ -38,3 +38,7 @@ public protocol MeasuredNode {
 }
 
 public protocol ShrinkableNode {}
+
+public protocol ShrinkContainer: ShrinkableNode {
+    var unshrinkableSize: CGSize { get }
+}

@@ -88,7 +88,10 @@ private struct HStackLayout {
         }
         let beforeWidth = shrinkIndices.reduce(0) { $0 + collection[$1].size.width }
         let left = max(proposedSize.width - resumed + beforeWidth, 0)
-        let shrinked = shrinkIndices.map { collection[$0].size.width }.shrinkTo(width: left)
+        let unshrinkable = shrinkIndices.map {
+            (collection[$0] as? ShrinkContainer)?.unshrinkableSize.width ?? 0
+        }
+        let shrinked = shrinkIndices.map { collection[$0].size.width }.shrinkTo(width: left, unshrinkable: unshrinkable)
         zip(shrinkIndices, shrinked).forEach {
             let context = LayoutContext(width: $1, height: context.proposedSize.height)
             collection[$0] = layout(node: children[$0], context: context)
