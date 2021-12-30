@@ -27,64 +27,66 @@
 import UIKit
 import Fluid
 
-class View: UIView, ShrinkableNode, Measurable {
-    var max: CGFloat = 1000
-    func layout(using layoutContext: LayoutContext) -> CGSize {
-        guard layoutContext.proposedSize.width <= max else {
-            return .init(width: max, height: 40)
-        }
-        return .init(width: layoutContext.proposedSize.width,
-                     height: min(layoutContext.proposedSize.height, 40 + max - layoutContext.proposedSize.width))
+extension UILabel: Measurable, ShrinkableNode {
+    public func layout(using layoutContext: LayoutContext) -> CGSize {
+        sizeThatFits(layoutContext.proposedSize)
     }
 }
 
 class ViewController: UIViewController {
-    var view1 = View(frame: CGRect(origin: .zero, size: .init(width: 800, height: 40)))
-    var view2 = View(frame: CGRect(origin: .zero, size: .init(width: 200, height: 40)))
-    var view3 = View(frame: CGRect(origin: .zero, size: .init(width: 1000, height: 40)))
-    var view4 = UIView()
+    private let imageView: UIImageView = {
+        let im = UIImageView(image: UIImage(named: "Blue.jpg"))
+        im.layer.masksToBounds = true
+        im.layer.cornerRadius = 40
+        im.layer.cornerCurve = .continuous
+        return im
+    }()
 
-    var container = UIView()
-    var node: MeasurableNode {
-        VStack(alignment: .leading) {
-            HStack(alignment: .bottom) {
-                self.view1
-//                    .frame(height: 100, alignment: .top)
-                self.view2
-//                    .padding(.horizontal)
-//                    .frame(width: 300, alignment: .topTrailing)
-            }
-            HStack {
-                self.view3
-//                    .frame(minWidth: 800, maxWidth: .infinity, minHeight: 100, maxHeight: 200)
-            }
-            Measure(AspectRatio(5)) { _, _ in
-                self.view4
+    private let nameLabel: UILabel = {
+        let label = UILabel()
+        label.font = .boldSystemFont(ofSize: 18)
+        label.numberOfLines = 1
+        label.textColor = .label
+        label.text = "Blue"
+        return label
+    }()
+
+    private let detailLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 15)
+        label.numberOfLines = 2
+        label.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        label.textColor = .secondaryLabel
+        return label
+    }()
+
+    lazy var node: MeasurableNode = {
+        HStack(spacing: 16) {
+            Measure(AspectRatio(1)) { _, _ in self.imageView }
+                .frame(width: 80, height: 80)
+            VStack(alignment: .leading) {
+                nameLabel
+                detailLabel
             }
         }
-    }
+        .padding()
+    }()
+
+    let container = UIView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view1.max = 1000
-        view2.max = 200
-        view3.max = 1000
-        view1.backgroundColor = .systemPink
-        view2.backgroundColor = .systemCyan
-        view3.backgroundColor = .systemTeal
-        view4.backgroundColor = .systemOrange
-        container.backgroundColor = UIColor(white: 0.93, alpha: 1)
-        container.layer.borderWidth = 1
-        container.layer.borderColor = UIColor.systemPink.cgColor
         view.addSubview(container)
+        container.backgroundColor = UIColor(white: 0.95, alpha: 1)
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        let measured = node.layout(using: .init(view.frame.size))
-        container.frame = .init(origin: .init(x: 0, y: 40),
-                                size: measured.size)
+        var size = view.frame.size
+        size.width -= 40
+        let measured = node.layout(using: .init(size))
+        container.frame = .init(origin: .init(x: 20, y: 40), size: measured.size)
         measured.render(in: container, origin: .zero)
-        print(view4.frame, measured.size, view.frame.size)
+        print(size, measured.size)
     }
 }

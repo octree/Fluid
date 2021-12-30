@@ -43,7 +43,7 @@ private struct VStackLayout {
     }
 
     private func deal(with nodes: [MeasuredNode]) -> Result {
-        let totalSpacing = self.spacing * CGFloat(nodes.count - 1)
+        let totalSpacing = spacing * CGFloat(nodes.count - 1)
         var result = Result(size: .zero, children: [])
         result.size.height = totalSpacing
         var minX: CGFloat = 0
@@ -135,5 +135,11 @@ private struct MeasuredVStack: MeasuredNode {
 
     func render(in view: UIView, origin: CGPoint) {
         content.render(in: view, origin: origin)
+    }
+}
+
+extension VStack: ShrinkContainer, ShrinkableNode {
+    public var unshrinkableSize: CGSize {
+        content.unshrinkableSize
     }
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C227C664277DA12C009A37BB /* Blue.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C227C663277DA12C009A37BB /* Blue.jpg */; };
 		C27CAD89277D6C410039CC63 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27CAD88277D6C410039CC63 /* AppDelegate.swift */; };
 		C27CAD8B277D6C410039CC63 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27CAD8A277D6C410039CC63 /* SceneDelegate.swift */; };
 		C27CAD8D277D6C410039CC63 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27CAD8C277D6C410039CC63 /* ViewController.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C227C663277DA12C009A37BB /* Blue.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Blue.jpg; sourceTree = "<group>"; };
 		C27CAD85277D6C410039CC63 /* Playground.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Playground.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C27CAD88277D6C410039CC63 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C27CAD8A277D6C410039CC63 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 		C27CAD9F277D6E390039CC63 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				C227C663277DA12C009A37BB /* Blue.jpg */,
 				C27CAD8E277D6C410039CC63 /* Main.storyboard */,
 				C27CAD91277D6C420039CC63 /* Assets.xcassets */,
 				C27CAD93277D6C420039CC63 /* LaunchScreen.storyboard */,
@@ -164,6 +167,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C227C664277DA12C009A37BB /* Blue.jpg in Resources */,
 				C27CAD95277D6C420039CC63 /* LaunchScreen.storyboard in Resources */,
 				C27CAD92277D6C420039CC63 /* Assets.xcassets in Resources */,
 				C27CAD90277D6C410039CC63 /* Main.storyboard in Resources */,

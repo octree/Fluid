@@ -113,3 +113,10 @@ private struct MeasuredZStack: MeasuredNode {
         content.render(in: view, origin: origin)
     }
 }
+
+extension ZStack: ShrinkContainer, ShrinkableNode {
+    public var unshrinkableSize: CGSize {
+        content.unshrinkableSize
+    }
+}
+

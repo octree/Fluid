@@ -35,3 +35,13 @@ public protocol MeasuredCollection {
     func render(in view: UIView, origin: CGPoint)
     var children: [(CGRect, MeasuredNode)] { get }
 }
+
+public extension MeasurableCollection {
+    var unshrinkableSize: CGSize {
+        children.reduce(.zero) { size, node -> CGSize in
+            let nodeSize = (node as? ShrinkContainer)?.unshrinkableSize ?? .zero
+            return CGSize(width: max(size.width, nodeSize.width),
+                          height: max(size.height, nodeSize.height))
+        }
+    }
+}

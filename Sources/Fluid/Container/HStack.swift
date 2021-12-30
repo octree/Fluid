@@ -43,7 +43,7 @@ private struct HStackLayout {
     }
 
     private func deal(with nodes: [MeasuredNode]) -> Result {
-        let totalSpacing = self.spacing * CGFloat(nodes.count - 1)
+        let totalSpacing = spacing * CGFloat(nodes.count - 1)
         var result = Result(size: .zero, children: [])
         result.size.width = totalSpacing
         var minY: CGFloat = 0
@@ -77,8 +77,8 @@ private struct HStackLayout {
         guard children.count > 0 else { return .init(size: .zero, children: []) }
         let proposedSize = context.proposedSize
         var collection = children.map { layout(node: $0, context: context) }
-        let spacing = self.spacing * CGFloat(children.count - 1)
-        let resumed = collection.reduce(0) { $0 + $1.size.width } + spacing
+        let totalSpacing = spacing * CGFloat(children.count - 1)
+        let resumed = collection.reduce(0) { $0 + $1.size.width } + totalSpacing
         if proposedSize.width >= resumed {
             return deal(with: collection)
         }
@@ -135,5 +135,11 @@ private struct MeasuredHStack: MeasuredNode {
 
     func render(in view: UIView, origin: CGPoint) {
         content.render(in: view, origin: origin)
+    }
+}
+
+extension HStack: ShrinkContainer, ShrinkableNode {
+    public var unshrinkableSize: CGSize {
+        content.unshrinkableSize
     }
 }
