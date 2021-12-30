@@ -70,13 +70,13 @@ class ViewController: UIViewController {
             }
         }
         .padding()
+        .background(container)
     }()
 
     let container = UIView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(container)
         container.backgroundColor = UIColor(white: 0.95, alpha: 1)
     }
 
@@ -85,8 +85,6 @@ class ViewController: UIViewController {
         var size = view.frame.size
         size.width -= 40
         let measured = node.layout(using: .init(size))
-        container.frame = .init(origin: .init(x: 20, y: 40), size: measured.size)
-        measured.render(in: container, origin: .zero)
-        print(size, measured.size)
+        measured.render(in: view, origin: .init(x: 20, y: 40))
     }
 }
