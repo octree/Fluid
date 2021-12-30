@@ -58,7 +58,7 @@ private struct HStackLayout {
             rect.formAlign(to: firstRect, alignment: alignment)
             result.children.append((rect, node))
             minY = min(minY, rect.minY)
-            maxY = min(maxY, rect.maxY)
+            maxY = max(maxY, rect.maxY)
             x += rect.width + spacing
             result.size.width += rect.width
         }
