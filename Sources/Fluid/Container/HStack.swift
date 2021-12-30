@@ -48,20 +48,21 @@ private struct HStackLayout {
         result.size.width = spacing
         var minY: CGFloat = 0
         let firstRect = CGRect(origin: .zero, size: nodes.first!.size)
+        var maxY: CGFloat = firstRect.maxY
         var x = firstRect.width + spacing
         result.children = [(firstRect, nodes.first!)]
         result.size.width += nodes.first!.size.width
-        result.size.height = nodes.first!.size.height
 
         for node in nodes.dropFirst() {
             var rect = CGRect(origin: .init(x: x, y: 0), size: node.size)
             rect.formAlign(to: firstRect, alignment: alignment)
             result.children.append((rect, node))
             minY = min(minY, rect.minY)
+            maxY = min(maxY, rect.maxY)
             x += rect.width + spacing
             result.size.width += rect.width
-            result.size.height = max(result.size.height, rect.height)
         }
+        result.size.height = maxY - minY
         result.normalize(minY: minY)
         return result
     }
