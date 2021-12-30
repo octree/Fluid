@@ -41,6 +41,7 @@ class View: UIView, ShrinkableNode, Measurable {
 class ViewController: UIViewController {
     var view1 = View(frame: CGRect(origin: .zero, size: .init(width: 800, height: 40)))
     var view2 = View(frame: CGRect(origin: .zero, size: .init(width: 200, height: 40)))
+    var container = UIView()
     var node: MeasurableNode {
         HStack(alignment: .top) {
             self.view1
@@ -54,11 +55,17 @@ class ViewController: UIViewController {
         view2.max = 200
         view1.backgroundColor = .systemPink
         view2.backgroundColor = .systemCyan
+        container.backgroundColor = UIColor(white: 0.93, alpha: 1)
+        container.layer.borderWidth = 1
+        container.layer.borderColor = UIColor.systemPink.cgColor
+        view.addSubview(container)
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         let measured = node.layout(using: .init(width: view.frame.size.width, height: view.frame.size.height))
-        measured.render(in: view, origin: .init(x: 0, y: 100))
+        container.frame = .init(origin: .init(x: 0, y: 0),
+                                size: measured.size)
+        measured.render(in: container, origin: .zero)
     }
 }
