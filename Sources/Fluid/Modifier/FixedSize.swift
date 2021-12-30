@@ -26,7 +26,7 @@
 
 import UIKit
 
-struct FixedSize<Content: MeasurableNode>: MeasurableNode {
+struct FixedSizeModifier<Content: MeasurableNode>: MeasurableNode {
     var alignment: Alignment = .center
     var width: CGFloat?
     var height: CGFloat?
@@ -47,7 +47,7 @@ struct FixedSize<Content: MeasurableNode>: MeasurableNode {
     }
 }
 
-extension FixedSize: ShrinkContainer, ShrinkableNode where Content: ShrinkableNode {
+extension FixedSizeModifier: ShrinkContainer, ShrinkableNode where Content: ShrinkableNode {
     var unshrinkableSize: CGSize {
         var size = CGSize(width: width ?? 0, height: height ?? 0)
         guard let content = content as? ShrinkContainer else {
@@ -63,7 +63,7 @@ extension FixedSize: ShrinkContainer, ShrinkableNode where Content: ShrinkableNo
 public extension MeasurableNode {
     func frame(width: CGFloat? = nil, height: CGFloat? = nil, alignment: Alignment = .center) -> MeasurableNode {
         assert(width != .infinity && height != .infinity)
-        return FixedSize(alignment: alignment, width: width, height: height, content: self)
+        return FixedSizeModifier(alignment: alignment, width: width, height: height, content: self)
     }
 }
 

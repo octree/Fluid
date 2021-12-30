@@ -26,9 +26,9 @@
 
 import UIKit
 
-struct OverlayModifier<Content: MeasurableNode, Overlay: MeasurableNode>: MeasurableNode {
+struct OverlayModifier<Content: MeasurableNode>: MeasurableNode {
     let content: Content
-    let overlay: Overlay
+    let overlay: MeasurableNode
 
     var children: [MeasurableNode] { [content] }
 
@@ -62,7 +62,7 @@ extension OverlayModifier: ShrinkContainer, ShrinkableNode where Content: Shrink
 }
 
 public extension MeasurableNode {
-    func overlay<B: MeasurableNode>(_ node: () -> B) -> MeasurableNode {
+    func overlay(_ node: () -> MeasurableNode) -> MeasurableNode {
         OverlayModifier(content: self, overlay: node())
     }
 
@@ -74,7 +74,7 @@ public extension MeasurableNode {
 }
 
 public extension Measurable where Self: UIView {
-    func overlay<B: MeasurableNode>(_ node: () -> B) -> MeasurableNode {
+    func overlay(_ node: () -> MeasurableNode) -> MeasurableNode {
         Measure(self) { _, _ in self }.overlay(node)
     }
 

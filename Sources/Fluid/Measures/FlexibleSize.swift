@@ -48,6 +48,11 @@ public struct FlexibleSize: Measurable {
         self.height = height
     }
 
+    public init(width: CGFloat, height: CGFloat) {
+        self.width = .absolute(width)
+        self.height = .absolute(height)
+    }
+
     public func layout(using layoutContext: LayoutContext) -> CGSize {
         return CGSize(width: width.dimension(in: layoutContext.proposedSize.width),
                       height: height.dimension(in: layoutContext.proposedSize.height))

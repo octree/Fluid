@@ -26,9 +26,9 @@
 
 import UIKit
 
-struct BackgroundModifier<Content: MeasurableNode, Background: MeasurableNode>: MeasurableNode {
+struct BackgroundModifier<Content: MeasurableNode>: MeasurableNode {
     let content: Content
-    let background: Background
+    let background: MeasurableNode
 
     var children: [MeasurableNode] { [content] }
 
@@ -62,7 +62,7 @@ extension BackgroundModifier: ShrinkContainer, ShrinkableNode where Content: Shr
 }
 
 public extension MeasurableNode {
-    func background<B: MeasurableNode>(_ node: () -> B) -> MeasurableNode {
+    func background(_ node: () -> MeasurableNode) -> MeasurableNode {
         BackgroundModifier(content: self, background: node())
     }
 
@@ -74,7 +74,7 @@ public extension MeasurableNode {
 }
 
 public extension Measurable where Self: UIView {
-    func background<B: MeasurableNode>(_ node: () -> B) -> MeasurableNode {
+    func background(_ node: () -> MeasurableNode) -> MeasurableNode {
         Measure(self) { _, _ in self }.background(node)
     }
 

@@ -60,9 +60,12 @@ class ViewController: UIViewController {
         return label
     }()
 
-    private var overlay: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemPink.withAlphaComponent(0.3)
+    private lazy var editButton: UIButton = {
+        let view = UIButton(type: .custom)
+        let image = UIImage(systemName: "pencil.circle.fill",
+                            withConfiguration: UIImage.SymbolConfiguration(font: .systemFont(ofSize: 30)))
+        view.setImage(image, for: .normal)
+        view.imageView?.contentMode = .scaleAspectFill
         return view
     }()
 
@@ -70,7 +73,12 @@ class ViewController: UIViewController {
         HStack(spacing: 16) {
             Measure(AspectRatio(1)) { _, _ in self.imageView }
                 .frame(width: 80, height: 80)
-                .overlay(overlay)
+                .overlay {
+                    Measure(FlexibleSize(width: 20, height: 20)) { _, _ in self.editButton }
+                        .padding(.trailing, 3)
+                        .padding(.bottom, 3)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                }
             VStack(alignment: .leading) {
                 nameLabel
                 detailLabel
