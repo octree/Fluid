@@ -75,8 +75,7 @@ class ViewController: UIViewController {
                 .frame(width: 80, height: 80)
                 .overlay {
                     Measure(FlexibleSize(width: 20, height: 20)) { _, _ in self.editButton }
-                        .padding(.trailing, 3)
-                        .padding(.bottom, 3)
+                        .offset(x: -3, y: -3)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                 }
             VStack(alignment: .leading) {
@@ -85,6 +84,7 @@ class ViewController: UIViewController {
             }
         }
         .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(container)
     }()
 
