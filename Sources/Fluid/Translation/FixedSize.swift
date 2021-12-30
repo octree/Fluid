@@ -1,5 +1,5 @@
 //
-//  Padding.swift
+//  File.swift
 //  Fluid
 //
 //  Created by octree on 2021/12/30.
@@ -26,34 +26,30 @@
 
 import UIKit
 
-struct Padding<Content: MeasurableNode>: MeasurableNode {
-    let edges: Edge.Set
-    let length: CGFloat
-    let content: Content
+struct FixedSize<Content: MeasurableNode>: MeasurableNode {
+    var alignment: Alignment = .center
+    var width: CGFloat?
+    var height: CGFloat?
+    var content: Content
 
     var children: [MeasurableNode] { [content] }
 
     func layout(using layoutContext: LayoutContext) -> MeasuredNode {
         var proposedSize = layoutContext.proposedSize
-        let insets = edges.insets(length: length)
-        if proposedSize.width != .infinity {
-            proposedSize.width -= insets.horizontal
-        }
-        if proposedSize.height != .infinity {
-            proposedSize.height -= insets.vertical
-        }
-        let node = content.layout(using: .init(width: proposedSize.width, height: proposedSize.height))
-        let size = CGSize(width: node.size.width + insets.horizontal,
-                          height: node.size.height + insets.vertical)
-        let rect = CGRect(origin: .init(x: insets.left, y: insets.top), size: node.size)
-        return Measured(size: size, frame: rect, content: node)
+        if let width = width { proposedSize.width = width }
+        if let height = height { proposedSize.height = height }
+        let measured = content.layout(using: .init(proposedSize))
+        let size = CGSize(width: width ?? measured.size.width,
+                          height: height ?? measured.size.height)
+        var frame = CGRect(origin: .zero, size: measured.size)
+        frame.formAlign(to: .init(origin: .zero, size: size), alignment: alignment)
+        return Measured(size: size, frame: frame, content: measured)
     }
 }
 
-extension Padding: ShrinkContainer, ShrinkableNode where Content: ShrinkableNode {
+extension FixedSize: ShrinkContainer, ShrinkableNode where Content: ShrinkableNode {
     var unshrinkableSize: CGSize {
-        let insets = edges.insets(length: length)
-        var size = CGSize(width: insets.horizontal, height: insets.vertical)
+        var size = CGSize(width: width ?? 0, height: height ?? 0)
         guard let content = content as? ShrinkContainer else {
             return size
         }
@@ -65,13 +61,13 @@ extension Padding: ShrinkContainer, ShrinkableNode where Content: ShrinkableNode
 }
 
 public extension MeasurableNode {
-    func padding(_ edges: Edge.Set = .all, _ length: CGFloat = 16) -> MeasurableNode {
-        Padding(edges: edges, length: length, content: self)
+    func frame(width: CGFloat? = nil, height: CGFloat? = nil, alignment: Alignment = .center) -> MeasurableNode {
+        FixedSize(alignment: alignment, width: width, height: height, content: self)
     }
 }
 
 public extension Measurable where Self: UIView {
-    func padding(_ edges: Edge.Set = .all, _ length: CGFloat = 16) -> MeasurableNode {
-        Measure(self) { _, _ in self }.padding(edges, length)
+    func frame(width: CGFloat? = nil, height: CGFloat? = nil, alignment: Alignment = .center) -> MeasurableNode {
+        Measure(self) { _, _ in self }.frame(width: width, height: height, alignment: alignment)
     }
 }

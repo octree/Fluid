@@ -25,6 +25,7 @@
 //  THE SOFTWARE.
 
 import UIKit
+import CoreGraphics
 
 public protocol Measurable {
     associatedtype Layout
@@ -97,3 +98,18 @@ public extension Measure {
 }
 
 extension Measure: ShrinkableNode where Content: ShrinkableNode {}
+
+struct Measured: MeasuredNode {
+    var size: CGSize
+    var frame: CGRect
+    var content: MeasuredNode
+
+    var positionedChildren: [(CGRect, MeasuredNode)] {
+        [(frame, content)]
+    }
+
+    func render(in view: UIView, origin: CGPoint) {
+        let new = origin.moved(frame.origin)
+        content.render(in: view, origin: new)
+    }
+}

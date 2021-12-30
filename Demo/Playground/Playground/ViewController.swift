@@ -34,7 +34,7 @@ class View: UIView, ShrinkableNode, Measurable {
             return .init(width: max, height: 40)
         }
         return .init(width: layoutContext.proposedSize.width,
-                     height: 40 + max - layoutContext.proposedSize.width)
+                     height: min(layoutContext.proposedSize.height, 40 + max - layoutContext.proposedSize.width))
     }
 }
 
@@ -48,7 +48,10 @@ class ViewController: UIViewController {
         VStack(alignment: .leading) {
             HStack(alignment: .bottom) {
                 self.view1
-                self.view2.padding(.horizontal)
+                    .frame(height: 100, alignment: .top)
+                self.view2
+                    .padding(.horizontal)
+                    .frame(width: 300, alignment: .topTrailing)
             }
             HStack {
                 self.view3
@@ -76,6 +79,6 @@ class ViewController: UIViewController {
         container.frame = .init(origin: .init(x: 0, y: 40),
                                 size: measured.size)
         measured.render(in: container, origin: .zero)
-        print(view2.frame.width)
+        print(view1.frame.width)
     }
 }

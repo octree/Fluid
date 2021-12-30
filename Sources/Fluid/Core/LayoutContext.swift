@@ -32,4 +32,8 @@ public struct LayoutContext {
     public init(width: CGFloat = .infinity, height: CGFloat = .infinity) {
         self.proposedSize = .init(width: width, height: height)
     }
+
+    public init(_ size: CGSize) {
+        self.proposedSize = size
+    }
 }
