@@ -60,10 +60,17 @@ class ViewController: UIViewController {
         return label
     }()
 
+    private var overlay: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemPink.withAlphaComponent(0.3)
+        return view
+    }()
+
     lazy var node: MeasurableNode = {
         HStack(spacing: 16) {
             Measure(AspectRatio(1)) { _, _ in self.imageView }
                 .frame(width: 80, height: 80)
+                .overlay(overlay)
             VStack(alignment: .leading) {
                 nameLabel
                 detailLabel
