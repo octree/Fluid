@@ -48,7 +48,7 @@ class ViewController: UIViewController {
         VStack(alignment: .leading) {
             HStack(alignment: .bottom) {
                 self.view1
-                self.view2
+                self.view2.padding(.horizontal)
             }
             HStack {
                 self.view3
@@ -76,5 +76,6 @@ class ViewController: UIViewController {
         container.frame = .init(origin: .init(x: 0, y: 40),
                                 size: measured.size)
         measured.render(in: container, origin: .zero)
+        print(view2.frame.width)
     }
 }

@@ -65,8 +65,23 @@ import UIKit
         public init(_ e: Edge) {
             rawValue = 1 << e.rawValue
         }
+
         /// The raw type that can be used to represent all values of the conforming
         /// type.
         public typealias RawValue = Int8
     }
+}
+
+extension Edge.Set {
+    func insets(length: CGFloat) -> UIEdgeInsets {
+        .init(top: contains(.top) ? length : 0,
+              left: contains(.leading) ? length : 0,
+              bottom: contains(.bottom) ? length : 0,
+              right: contains(.trailing) ? length : 0)
+    }
+}
+
+extension UIEdgeInsets {
+    var horizontal: CGFloat { self.left + self.right }
+    var vertical: CGFloat { self.top + self.bottom }
 }
