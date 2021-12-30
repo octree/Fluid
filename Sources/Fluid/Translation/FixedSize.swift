@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  FixedSize.swift
 //  Fluid
 //
 //  Created by octree on 2021/12/30.
@@ -62,7 +62,8 @@ extension FixedSize: ShrinkContainer, ShrinkableNode where Content: ShrinkableNo
 
 public extension MeasurableNode {
     func frame(width: CGFloat? = nil, height: CGFloat? = nil, alignment: Alignment = .center) -> MeasurableNode {
-        FixedSize(alignment: alignment, width: width, height: height, content: self)
+        assert(width != .infinity && height != .infinity)
+        return FixedSize(alignment: alignment, width: width, height: height, content: self)
     }
 }
 

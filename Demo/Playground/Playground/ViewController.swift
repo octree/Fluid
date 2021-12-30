@@ -55,6 +55,7 @@ class ViewController: UIViewController {
             }
             HStack {
                 self.view3
+                    .frame(minWidth: 800, maxWidth: .infinity, minHeight: 100, maxHeight: 200)
             }
         }
     }
@@ -79,6 +80,5 @@ class ViewController: UIViewController {
         container.frame = .init(origin: .init(x: 0, y: 40),
                                 size: measured.size)
         measured.render(in: container, origin: .zero)
-        print(view1.frame.width)
     }
 }
