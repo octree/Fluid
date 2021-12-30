@@ -25,14 +25,40 @@
 //  THE SOFTWARE.
 
 import UIKit
+import Fluid
+
+class View: UIView, ShrinkableNode, Measurable {
+    var max: CGFloat = 1000
+    func layout(using layoutContext: LayoutContext) -> CGSize {
+        guard layoutContext.proposedSize.width <= max else {
+            return .init(width: max, height: 40)
+        }
+        return .init(width: layoutContext.proposedSize.width,
+                     height: 40 + max - layoutContext.proposedSize.width)
+    }
+}
 
 class ViewController: UIViewController {
+    var view1 = View(frame: CGRect(origin: .zero, size: .init(width: 800, height: 40)))
+    var view2 = View(frame: CGRect(origin: .zero, size: .init(width: 200, height: 40)))
+    var node: MeasurableNode {
+        HStack(alignment: .top) {
+            self.view1
+            self.view2
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        view1.max = 1000
+        view2.max = 200
+        view1.backgroundColor = .systemPink
+        view2.backgroundColor = .systemCyan
     }
 
-
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        let measured = node.layout(using: .init(width: view.frame.size.width, height: view.frame.size.height))
+        measured.render(in: view, origin: .init(x: 0, y: 100))
+    }
 }
-
