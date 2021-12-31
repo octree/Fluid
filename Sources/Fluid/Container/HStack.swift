@@ -68,7 +68,7 @@ private struct HStackLayout {
             result.children.append((rect, node))
             minY = min(minY, rect.minY)
             maxY = max(maxY, rect.maxY)
-            x += rect.width +  (node is MeasuredSpacer ? 0 : spacing)
+            x += rect.width + (node is MeasuredSpacer ? 0 : spacing)
         }
         result.size.height = maxY - minY
         result.normalize(minY: minY)
@@ -150,6 +150,8 @@ private struct MeasuredHStack: MeasuredNode {
 
 extension HStack: ShrinkContainer, ShrinkableNode {
     public var unshrinkableSize: CGSize {
-        content.unshrinkableSize
+        content.unshrinkableSizeList.reduce(.zero) {
+            CGSize(width: $0.width + $1.width, height: max($0.height, $1.height))
+        }
     }
 }

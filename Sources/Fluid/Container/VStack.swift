@@ -151,6 +151,8 @@ private struct MeasuredVStack: MeasuredNode {
 
 extension VStack: ShrinkContainer, ShrinkableNode {
     public var unshrinkableSize: CGSize {
-        content.unshrinkableSize
+        content.unshrinkableSizeList.reduce(.zero) {
+            CGSize(width: max($0.width, $1.width), height: $0.height + $1.height)
+        }
     }
 }

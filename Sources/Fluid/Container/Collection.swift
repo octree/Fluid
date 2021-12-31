@@ -38,10 +38,13 @@ public protocol MeasuredCollection {
 
 public extension MeasurableCollection {
     var unshrinkableSize: CGSize {
-        children.reduce(.zero) { size, node -> CGSize in
-            let nodeSize = (node as? ShrinkContainer)?.unshrinkableSize ?? .zero
-            return CGSize(width: max(size.width, nodeSize.width),
-                          height: max(size.height, nodeSize.height))
+        unshrinkableSizeList.reduce(.zero) {
+            CGSize(width: max($0.width, $1.width),
+                   height: max($0.height, $1.height))
         }
+    }
+
+    var unshrinkableSizeList: [CGSize] {
+        children.compactMap { ($0 as? ShrinkContainer)?.unshrinkableSize }
     }
 }
