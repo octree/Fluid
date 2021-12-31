@@ -27,12 +27,6 @@
 import UIKit
 import Fluid
 
-extension UILabel: Measurable, ShrinkableNode {
-    public func layout(using layoutContext: LayoutContext) -> CGSize {
-        sizeThatFits(layoutContext.proposedSize)
-    }
-}
-
 class ViewController: UIViewController {
     private let imageView: UIImageView = {
         let im = UIImageView(image: UIImage(named: "Blue.jpg"))

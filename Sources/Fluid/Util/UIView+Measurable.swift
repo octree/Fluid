@@ -38,3 +38,9 @@ public extension UIView {
         Measure(AspectRatio(ratio)) { _, _ in self }
     }
 }
+
+extension UIView: Measurable, ShrinkableNode {
+    public func layout(using layoutContext: LayoutContext) -> CGSize {
+        sizeThatFits(layoutContext.proposedSize)
+    }
+}
