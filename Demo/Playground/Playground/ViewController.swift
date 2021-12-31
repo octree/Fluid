@@ -70,6 +70,13 @@ class ViewController: UIViewController {
         return view
     }()
 
+    private var chevronImageView: UIImageView = {
+        let view = UIImageView(image: UIImage(systemName: "chevron.right"))
+        view.contentMode = .scaleAspectFit
+        view.tintColor = .systemRed
+        return view
+    }()
+
     lazy var node: MeasurableNode = {
         HStack(spacing: 16) {
             self.imageView
@@ -86,6 +93,8 @@ class ViewController: UIViewController {
                 detailLabel
             }
             Spacer()
+            chevronImageView
+                .flexible(width: 20, height: 20)
         }
         .padding()
         .background(container)
