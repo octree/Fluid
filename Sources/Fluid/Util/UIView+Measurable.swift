@@ -27,5 +27,14 @@
 import UIKit
 
 public extension UIView {
-//    func flexible
+    func flexible(width: FlexibleSize.Dimension, height: FlexibleSize.Dimension) -> some MeasurableNode {
+        Measure(FlexibleSize(width: width, height: height)) { _, _ in self }
+    }
+
+    /// Create a measurable node with aspectRatio
+    /// - Parameter ratio: A floating point represents the ratio between width and height
+    /// - Returns: A measurable node
+    func aspectRatio(_ ratio: CGFloat) -> some MeasurableNode {
+        Measure(AspectRatio(ratio)) { _, _ in self }
+    }
 }

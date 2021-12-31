@@ -67,6 +67,13 @@ extension FlexibleSize.Dimension: ExpressibleByFloatLiteral {
     }
 }
 
+extension FlexibleSize.Dimension: ExpressibleByIntegerLiteral {
+    public typealias IntegerLiteralType = Int
+    public init(integerLiteral value: Int) {
+        self = .absolute(CGFloat(value))
+    }
+}
+
 postfix operator %
 
 public postfix func %(_ value: CGFloat) -> FlexibleSize.Dimension {

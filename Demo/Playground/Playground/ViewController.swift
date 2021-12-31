@@ -66,15 +66,18 @@ class ViewController: UIViewController {
                             withConfiguration: UIImage.SymbolConfiguration(font: .systemFont(ofSize: 30)))
         view.setImage(image, for: .normal)
         view.imageView?.contentMode = .scaleAspectFill
+        view.tintColor = .systemRed
         return view
     }()
 
     lazy var node: MeasurableNode = {
         HStack(spacing: 16) {
-            Measure(AspectRatio(1)) { _, _ in self.imageView }
-                .frame(width: 80, height: 80)
+            self.imageView
+                .aspectRatio(1)
+                .frame(width: 80)
                 .overlay {
-                    Measure(FlexibleSize(width: 20, height: 20)) { _, _ in self.editButton }
+                    self.editButton
+                        .flexible(width: 25%, height: 25%)
                         .offset(x: -3, y: -3)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                 }
