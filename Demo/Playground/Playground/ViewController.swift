@@ -77,7 +77,7 @@ class ViewController: UIViewController {
         return view
     }()
 
-    lazy var node: MeasurableNode = {
+    var node: MeasurableNode {
         HStack(spacing: 16) {
             self.imageView
                 .aspectRatio(1)
@@ -98,7 +98,7 @@ class ViewController: UIViewController {
         }
         .padding()
         .background(container)
-    }()
+    }
 
     let container = UIView()
 
