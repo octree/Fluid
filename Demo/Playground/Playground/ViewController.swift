@@ -48,7 +48,7 @@ class ViewController: UIViewController {
     private let detailLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 15)
-        label.numberOfLines = 2
+        label.numberOfLines = 1
         label.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         label.textColor = .secondaryLabel
         return label

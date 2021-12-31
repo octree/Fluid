@@ -41,6 +41,10 @@ public extension UIView {
 
 extension UIView: Measurable, ShrinkableNode {
     public func layout(using layoutContext: LayoutContext) -> CGSize {
-        sizeThatFits(layoutContext.proposedSize)
+        if let label = self as? UILabel, label.numberOfLines == 1 {
+            return label.textRect(forBounds: .init(origin: .zero, size: layoutContext.proposedSize),
+                                  limitedToNumberOfLines: 1).size
+        }
+        return sizeThatFits(layoutContext.proposedSize)
     }
 }
