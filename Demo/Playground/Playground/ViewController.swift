@@ -82,17 +82,13 @@ class ViewController: UIViewController {
                         .offset(x: -3, y: -3)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                 }
-                .tag(1)
             VStack(alignment: .leading) {
                 nameLabel
-                    .tag(2)
                 detailLabel
-                    .tag(3)
             }
             Spacer()
             chevronImageView
                 .flexible(width: 20, height: 20)
-                .tag(4)
         }
         .padding()
         .background(backgroundView)
@@ -112,8 +108,5 @@ class ViewController: UIViewController {
         size.height -= 60
         let measured = node.layout(using: .init(size))
         measured.render(in: view, origin: .init(x: 20, y: 40))
-        (0...4).forEach {
-            print($0, measured.frame(withTag: $0)?.debugDescription ?? "not found")
-        }
     }
 }
