@@ -35,10 +35,14 @@ HStack(spacing: 16) {
 
 ## Installation
 
-### **Swift Package Manager (SPM)**
-
 ### Swift Package Manager
 
 - File > Swift Packages > Add Package Dependency
 - Add https://github.com/octree/Fluid.git
 - Select "Up to Next Major" with "1.0.0"
+
+
+
+## License
+
+**Fluid** is available under the MIT license. See the LICENSE file for more info.
