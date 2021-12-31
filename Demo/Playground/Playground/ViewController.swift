@@ -91,14 +91,14 @@ class ViewController: UIViewController {
                 .flexible(width: 20, height: 20)
         }
         .padding()
-        .background(container)
+        .background(backgroundView)
     }
 
-    let container = UIView()
+    let backgroundView = UIView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        container.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        backgroundView.backgroundColor = UIColor(white: 0.95, alpha: 1)
     }
 
     override func viewDidLayoutSubviews() {
