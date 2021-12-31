@@ -90,6 +90,16 @@ public extension MeasurableNode {
     }
 }
 
+public extension UIView {
+    func tag<Tag: Hashable>(_ tag: Tag) -> MeasurableNode {
+        Measure(self) { _, _ in self }.tag(tag)
+    }
+
+    func tag<Tag: ValueTag>(_ tag: Tag, _ value: Tag.Value) -> MeasurableNode {
+        Measure(self) { _, _ in self }.tag(tag, value)
+    }
+}
+
 @usableFromInline
 protocol TaggedNode {
     var tag: AnyHashable? { get }
@@ -179,3 +189,9 @@ public extension MeasuredNode {
 }
 
 extension TaggedMeasurableNode: ShrinkableNode where Content: ShrinkableNode {}
+extension TaggedMeasurableNode: ShrinkContainer where Content: ShrinkContainer {
+    @usableFromInline
+    var unshrinkableSize: CGSize {
+        content.unshrinkableSize
+    }
+}
