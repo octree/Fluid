@@ -42,16 +42,25 @@ private struct HStackLayout {
         }
     }
 
-    private func deal(with nodes: [MeasuredNode]) -> Result {
-        let totalSpacing = spacing * CGFloat(nodes.count - 1)
+    private func deal(with nodes: [MeasuredNode], spacerIndices: [Int]) -> Result {
+        var nodes = nodes
+        let totalSpacing = spacing * CGFloat(max(0, nodes.count - 1 - spacerIndices.count))
         var result = Result(size: .zero, children: [])
-        result.size.width = totalSpacing
+        result.size.width = totalSpacing + nodes.reduce(0) { $0 + $1.size.width }
+        let proposedWidth = context.proposedSize.width
+        let left = proposedWidth - result.size.width
+        if spacerIndices.count > 0, proposedWidth != .infinity, left > 0 {
+            let per = left / CGFloat(spacerIndices.count)
+            spacerIndices.forEach {
+                nodes[$0] = MeasuredSpacer(size: .init(width: per, height: 0))
+            }
+            result.size.width = proposedWidth
+        }
         var minY: CGFloat = 0
         let firstRect = CGRect(origin: .zero, size: nodes.first!.size)
         var maxY: CGFloat = firstRect.maxY
-        var x = firstRect.width + spacing
+        var x = firstRect.width + (nodes.first is MeasuredSpacer ? 0 : spacing)
         result.children = [(firstRect, nodes.first!)]
-        result.size.width += nodes.first!.size.width
 
         for node in nodes.dropFirst() {
             var rect = CGRect(origin: .init(x: x, y: 0), size: node.size)
@@ -59,8 +68,7 @@ private struct HStackLayout {
             result.children.append((rect, node))
             minY = min(minY, rect.minY)
             maxY = max(maxY, rect.maxY)
-            x += rect.width + spacing
-            result.size.width += rect.width
+            x += rect.width +  (node is MeasuredSpacer ? 0 : spacing)
         }
         result.size.height = maxY - minY
         result.normalize(minY: minY)
@@ -68,23 +76,25 @@ private struct HStackLayout {
     }
 
     func layout(node: MeasurableNode, context: LayoutContext) -> MeasuredNode {
-        let node = node.layout(using: context)
+        let node = node is Spacer ? node.layout(using: .init(.zero)) : node.layout(using: context)
         precondition(node.size.width != .infinity)
         return node
     }
 
     func layout(_ children: [MeasurableNode]) -> Result {
         guard children.count > 0 else { return .init(size: .zero, children: []) }
+        let spacerIndices = children.indices.filter { children[$0] is Spacer }
+        let nonSpacerCount = children.count - spacerIndices.count
         let proposedSize = context.proposedSize
         var collection = children.map { layout(node: $0, context: context) }
-        let totalSpacing = spacing * CGFloat(children.count - 1)
+        let totalSpacing = spacing * CGFloat(max(0, nonSpacerCount))
         let resumed = collection.reduce(0) { $0 + $1.size.width } + totalSpacing
         if proposedSize.width >= resumed {
-            return deal(with: collection)
+            return deal(with: collection, spacerIndices: spacerIndices)
         }
         let shrinkIndices = collection.indices.filter { children[$0] is ShrinkableNode }
         guard shrinkIndices.count > 0 else {
-            return deal(with: collection)
+            return deal(with: collection, spacerIndices: spacerIndices)
         }
         let beforeWidth = shrinkIndices.reduce(0) { $0 + collection[$1].size.width }
         let left = max(proposedSize.width - resumed + beforeWidth, 0)
@@ -96,7 +106,7 @@ private struct HStackLayout {
             let context = LayoutContext(width: $1, height: context.proposedSize.height)
             collection[$0] = layout(node: children[$0], context: context)
         }
-        return deal(with: collection)
+        return deal(with: collection, spacerIndices: spacerIndices)
     }
 }
 

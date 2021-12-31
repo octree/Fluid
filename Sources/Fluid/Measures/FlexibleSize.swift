@@ -58,3 +58,25 @@ public struct FlexibleSize: Measurable {
                       height: height.dimension(in: layoutContext.proposedSize.height))
     }
 }
+
+
+extension FlexibleSize.Dimension: ExpressibleByFloatLiteral {
+    public typealias FloatLiteralType = Double
+    public init(floatLiteral value: Double) {
+        self = .absolute(value)
+    }
+}
+
+postfix operator %
+
+public postfix func %(_ value: CGFloat) -> FlexibleSize.Dimension {
+    .flexible(value / 100)
+}
+
+public postfix func %<I: BinaryInteger>(_ value: I) -> FlexibleSize.Dimension {
+    .flexible(CGFloat(value) / 100)
+}
+
+public postfix func %<I: BinaryFloatingPoint>(_ value: I) -> FlexibleSize.Dimension {
+    .flexible(CGFloat(value) / 100)
+}

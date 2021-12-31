@@ -82,9 +82,9 @@ class ViewController: UIViewController {
                 nameLabel
                 detailLabel
             }
+            Spacer()
         }
         .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
         .background(container)
     }()
 
@@ -99,6 +99,7 @@ class ViewController: UIViewController {
         super.viewDidLayoutSubviews()
         var size = view.frame.size
         size.width -= 40
+        size.height -= 60
         let measured = node.layout(using: .init(size))
         measured.render(in: view, origin: .init(x: 20, y: 40))
     }
