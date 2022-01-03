@@ -51,13 +51,13 @@ struct Padding<Content: MeasurableNode>: MeasurableNode {
 }
 
 extension Padding: ShrinkContainer, ShrinkableNode where Content: ShrinkableNode {
-    var unshrinkableSize: CGSize {
+    func unshrinkableSize(in context: LayoutContext) -> CGSize {
         let insets = edges.insets(length: length)
         var size = CGSize(width: insets.horizontal, height: insets.vertical)
         guard let content = content as? ShrinkContainer else {
             return size
         }
-        let child = content.unshrinkableSize
+        let child = content.unshrinkableSize(in: context)
         size.width += child.width
         size.height += child.height
         return size

@@ -100,7 +100,7 @@ private struct VStackLayout {
         let beforeHeight = shrinkIndices.reduce(0) { $0 + collection[$1].size.height }
         let left = max(proposedSize.height - resumed + beforeHeight, 0)
         let unshrinkable = shrinkIndices.map {
-            (collection[$0] as? ShrinkContainer)?.unshrinkableSize.height ?? 0
+            (collection[$0] as? ShrinkContainer)?.unshrinkableSize(in: context).height ?? 0
         }
         let shrinked = shrinkIndices.map { collection[$0].size.height }.shrinkTo(width: left, unshrinkable: unshrinkable)
         zip(shrinkIndices, shrinked).forEach {
@@ -150,8 +150,8 @@ private struct MeasuredVStack: MeasuredNode {
 }
 
 extension VStack: ShrinkContainer, ShrinkableNode {
-    public var unshrinkableSize: CGSize {
-        content.unshrinkableSizeList.reduce(.zero) {
+    public func unshrinkableSize(in context: LayoutContext) -> CGSize {
+        content.unshrinkableSizeList(in: context).reduce(.zero) {
             CGSize(width: max($0.width, $1.width), height: $0.height + $1.height)
         }
     }

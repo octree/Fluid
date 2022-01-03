@@ -191,7 +191,7 @@ public extension MeasuredNode {
 extension TaggedMeasurableNode: ShrinkableNode where Content: ShrinkableNode {}
 extension TaggedMeasurableNode: ShrinkContainer where Content: ShrinkContainer {
     @usableFromInline
-    var unshrinkableSize: CGSize {
-        content.unshrinkableSize
+    func unshrinkableSize(in context: LayoutContext) -> CGSize {
+        content.unshrinkableSize(in: context)
     }
 }

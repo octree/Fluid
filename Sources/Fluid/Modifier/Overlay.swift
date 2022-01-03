@@ -56,8 +56,8 @@ private struct MeasuredOverlay: MeasuredNode {
 }
 
 extension OverlayModifier: ShrinkContainer, ShrinkableNode where Content: ShrinkableNode {
-    var unshrinkableSize: CGSize {
-        (content as? ShrinkContainer)?.unshrinkableSize ?? .zero
+    func unshrinkableSize(in context: LayoutContext) -> CGSize {
+        (content as? ShrinkContainer)?.unshrinkableSize(in: context) ?? .zero
     }
 }
 

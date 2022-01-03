@@ -26,24 +26,24 @@
 
 import UIKit
 
-public struct FlexibleSize: Measurable {
-    public enum Dimension {
-        case absolute(CGFloat)
-        case flexible(CGFloat)
-        internal func dimension(in containerDimension: CGFloat) -> CGFloat {
-            switch self {
-            case let .absolute(x):
-                return x
-            case let .flexible(x):
-                return x * containerDimension
-            }
+public enum FlexibleDimension {
+    case absolute(CGFloat)
+    case flexible(CGFloat)
+    internal func dimension(in containerDimension: CGFloat) -> CGFloat {
+        switch self {
+        case let .absolute(x):
+            return x
+        case let .flexible(x):
+            return containerDimension == .infinity ? .infinity : x * containerDimension
         }
     }
+}
 
-    public var width: Dimension
-    public var height: Dimension
+public struct FlexibleSize: Measurable {
+    public var width: FlexibleDimension
+    public var height: FlexibleDimension
 
-    public init(width: Dimension, height: Dimension) {
+    public init(width: FlexibleDimension, height: FlexibleDimension) {
         self.width = width
         self.height = height
     }
@@ -59,15 +59,14 @@ public struct FlexibleSize: Measurable {
     }
 }
 
-
-extension FlexibleSize.Dimension: ExpressibleByFloatLiteral {
+extension FlexibleDimension: ExpressibleByFloatLiteral {
     public typealias FloatLiteralType = Double
     public init(floatLiteral value: Double) {
         self = .absolute(value)
     }
 }
 
-extension FlexibleSize.Dimension: ExpressibleByIntegerLiteral {
+extension FlexibleDimension: ExpressibleByIntegerLiteral {
     public typealias IntegerLiteralType = Int
     public init(integerLiteral value: Int) {
         self = .absolute(CGFloat(value))
@@ -76,14 +75,14 @@ extension FlexibleSize.Dimension: ExpressibleByIntegerLiteral {
 
 postfix operator %
 
-public postfix func %(_ value: CGFloat) -> FlexibleSize.Dimension {
+public postfix func %(_ value: CGFloat) -> FlexibleDimension {
     .flexible(value / 100)
 }
 
-public postfix func %<I: BinaryInteger>(_ value: I) -> FlexibleSize.Dimension {
+public postfix func % <I: BinaryInteger>(_ value: I) -> FlexibleDimension {
     .flexible(CGFloat(value) / 100)
 }
 
-public postfix func %<I: BinaryFloatingPoint>(_ value: I) -> FlexibleSize.Dimension {
+public postfix func % <I: BinaryFloatingPoint>(_ value: I) -> FlexibleDimension {
     .flexible(CGFloat(value) / 100)
 }

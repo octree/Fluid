@@ -43,5 +43,7 @@ struct MeasuredSpacer: MeasuredNode {
 }
 
 extension MeasuredSpacer: ShrinkContainer, ShrinkableNode {
-    var unshrinkableSize: CGSize { .zero }
+    func unshrinkableSize(in context: LayoutContext) -> CGSize {
+        .zero
+    }
 }

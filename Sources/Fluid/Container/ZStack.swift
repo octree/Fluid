@@ -115,8 +115,8 @@ private struct MeasuredZStack: MeasuredNode {
 }
 
 extension ZStack: ShrinkContainer, ShrinkableNode {
-    public var unshrinkableSize: CGSize {
-        content.unshrinkableSize
+    public func unshrinkableSize(in context: LayoutContext) -> CGSize {
+        content.unshrinkableSize(in: context)
     }
 }
 

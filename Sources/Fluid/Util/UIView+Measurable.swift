@@ -27,7 +27,7 @@
 import UIKit
 
 public extension UIView {
-    func flexible(width: FlexibleSize.Dimension, height: FlexibleSize.Dimension) -> MeasurableNode {
+    func flexible(width: FlexibleDimension, height: FlexibleDimension) -> MeasurableNode {
         Measure(FlexibleSize(width: width, height: height)) { _, _ in self }
     }
 

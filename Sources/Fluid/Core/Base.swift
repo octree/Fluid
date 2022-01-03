@@ -40,5 +40,5 @@ public protocol MeasuredNode {
 public protocol ShrinkableNode {}
 
 public protocol ShrinkContainer: ShrinkableNode {
-    var unshrinkableSize: CGSize { get }
+    func unshrinkableSize(in context: LayoutContext) -> CGSize
 }

@@ -40,8 +40,8 @@ struct OffsetModifier<Content: MeasurableNode>: MeasurableNode {
 }
 
 extension OffsetModifier: ShrinkContainer, ShrinkableNode where Content: ShrinkableNode {
-    var unshrinkableSize: CGSize {
-        (content as? ShrinkContainer)?.unshrinkableSize ?? .zero
+    func unshrinkableSize(in context: LayoutContext) -> CGSize {
+        (content as? ShrinkContainer)?.unshrinkableSize(in: context) ?? .zero
     }
 }
 

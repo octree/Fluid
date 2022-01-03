@@ -99,7 +99,7 @@ private struct HStackLayout {
         let beforeWidth = shrinkIndices.reduce(0) { $0 + collection[$1].size.width }
         let left = max(proposedSize.width - resumed + beforeWidth, 0)
         let unshrinkable = shrinkIndices.map {
-            (collection[$0] as? ShrinkContainer)?.unshrinkableSize.width ?? 0
+            (collection[$0] as? ShrinkContainer)?.unshrinkableSize(in: context).width ?? 0
         }
         let shrinked = shrinkIndices.map { collection[$0].size.width }.shrinkTo(width: left, unshrinkable: unshrinkable)
         zip(shrinkIndices, shrinked).forEach {
@@ -149,8 +149,8 @@ private struct MeasuredHStack: MeasuredNode {
 }
 
 extension HStack: ShrinkContainer, ShrinkableNode {
-    public var unshrinkableSize: CGSize {
-        content.unshrinkableSizeList.reduce(.zero) {
+    public func unshrinkableSize(in context: LayoutContext) -> CGSize {
+        content.unshrinkableSizeList(in: context).reduce(.zero) {
             CGSize(width: $0.width + $1.width, height: max($0.height, $1.height))
         }
     }

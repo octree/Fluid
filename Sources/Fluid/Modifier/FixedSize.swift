@@ -28,14 +28,18 @@ import UIKit
 
 struct FixedSizeModifier<Content: MeasurableNode>: MeasurableNode {
     var alignment: Alignment = .center
-    var width: CGFloat?
-    var height: CGFloat?
+    var width: FlexibleDimension?
+    var height: FlexibleDimension?
     var content: Content
 
     var children: [MeasurableNode] { [content] }
 
     func layout(using layoutContext: LayoutContext) -> MeasuredNode {
         var proposedSize = layoutContext.proposedSize
+        let width = width?.dimension(in: proposedSize.width)
+        let height = height?.dimension(in: proposedSize.height)
+        assert(width != .infinity)
+        assert(height != .infinity)
         if let width = width { proposedSize.width = width }
         if let height = height { proposedSize.height = height }
         let measured = content.layout(using: .init(proposedSize))
@@ -48,12 +52,15 @@ struct FixedSizeModifier<Content: MeasurableNode>: MeasurableNode {
 }
 
 extension FixedSizeModifier: ShrinkContainer, ShrinkableNode where Content: ShrinkableNode {
-    var unshrinkableSize: CGSize {
+    func unshrinkableSize(in context: LayoutContext) -> CGSize {
+        let proposedSize = context.proposedSize
+        let width = width?.dimension(in: proposedSize.width)
+        let height = height?.dimension(in: proposedSize.height)
         var size = CGSize(width: width ?? 0, height: height ?? 0)
         guard let content = content as? ShrinkContainer else {
             return size
         }
-        let child = content.unshrinkableSize
+        let child = content.unshrinkableSize(in: context)
         size.width += child.width
         size.height += child.height
         return size
@@ -61,14 +68,13 @@ extension FixedSizeModifier: ShrinkContainer, ShrinkableNode where Content: Shri
 }
 
 public extension MeasurableNode {
-    func frame(width: CGFloat? = nil, height: CGFloat? = nil, alignment: Alignment = .center) -> MeasurableNode {
-        assert(width != .infinity && height != .infinity)
+    func frame(width: FlexibleDimension? = nil, height: FlexibleDimension? = nil, alignment: Alignment = .center) -> MeasurableNode {
         return FixedSizeModifier(alignment: alignment, width: width, height: height, content: self)
     }
 }
 
 public extension Measurable where Self: UIView {
-    func frame(width: CGFloat? = nil, height: CGFloat? = nil, alignment: Alignment = .center) -> MeasurableNode {
+    func frame(width: FlexibleDimension? = nil, height: FlexibleDimension? = nil, alignment: Alignment = .center) -> MeasurableNode {
         Measure(self) { _, _ in self }.frame(width: width, height: height, alignment: alignment)
     }
 }

@@ -1,10 +1,10 @@
 //
-//  Collection.swift
+//  Resizable.swift
 //  Fluid
 //
-//  Created by octree on 2021/12/30.
+//  Created by octree on 2022/1/2.
 //
-//  Copyright (c) 2021 Octree <octree@octree.me>
+//  Copyright (c) 2022 Octree <octree@octree.me>
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -26,25 +26,31 @@
 
 import UIKit
 
-public protocol MeasurableCollection {
-    var children: [MeasurableNode] { get }
-    func measuredCollection(_ content: [(CGRect, MeasuredNode)]) -> MeasuredCollection
-}
+struct ResizableModifier<Content: UIView>: MeasurableNode {
+    var content: Content
+    var children: [MeasurableNode] { [] }
 
-public protocol MeasuredCollection {
-    func render(in view: UIView, origin: CGPoint)
-    var children: [(CGRect, MeasuredNode)] { get }
-}
-
-public extension MeasurableCollection {
-    func unshrinkableSize(in context: LayoutContext) -> CGSize {
-        unshrinkableSizeList(in: context).reduce(.zero) {
-            CGSize(width: max($0.width, $1.width),
-                   height: max($0.height, $1.height))
-        }
+    func layout(using layoutContext: LayoutContext) -> MeasuredNode {
+        let proposedSize = layoutContext.proposedSize
+        assert(proposedSize.width != .infinity, "Resizable width can not be infinity")
+        assert(proposedSize.height != .infinity, "Resizable height can not be infinity")
+        let size = content.layout(using: layoutContext)
+        var frame = CGRect(origin: .zero, size: size)
+        frame.formAlign(to: .init(origin: .zero, size: proposedSize), alignment: Alignment.center)
+        return Measure.Measured(content: content, layout: size, body: { _, _ in
+            content
+        }, tag: nil)
     }
+}
 
-    func unshrinkableSizeList(in context: LayoutContext) -> [CGSize] {
-        children.compactMap { ($0 as? ShrinkContainer)?.unshrinkableSize(in: context) }
+extension ResizableModifier: ShrinkContainer, ShrinkableNode where Content: ShrinkableNode {
+    func unshrinkableSize(in context: LayoutContext) -> CGSize {
+        (content as? ShrinkContainer)?.unshrinkableSize(in: context) ?? .zero
+    }
+}
+
+public extension UIView {
+    func resizable() -> MeasurableNode {
+        return ResizableModifier(content: self)
     }
 }

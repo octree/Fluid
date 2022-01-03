@@ -71,12 +71,12 @@ struct BoundedSize<Content: MeasurableNode>: MeasurableNode {
 }
 
 extension BoundedSize: ShrinkContainer, ShrinkableNode where Content: ShrinkableNode {
-    var unshrinkableSize: CGSize {
+    func unshrinkableSize(in context: LayoutContext) -> CGSize {
         var size = CGSize(width: minWidth ?? 0, height: minHeight ?? 0)
         guard let content = content as? ShrinkContainer else {
             return size
         }
-        let child = content.unshrinkableSize
+        let child = content.unshrinkableSize(in: context)
         size.width += child.width
         size.height += child.height
         return size
