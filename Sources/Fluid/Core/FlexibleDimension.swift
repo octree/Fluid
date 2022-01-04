@@ -29,6 +29,8 @@ import UIKit
 public enum FlexibleDimension {
     case absolute(CGFloat)
     case flexible(CGFloat)
+
+    @usableFromInline
     internal func dimension(in containerDimension: CGFloat) -> CGFloat {
         switch self {
         case let .absolute(x):
