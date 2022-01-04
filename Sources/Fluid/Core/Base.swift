@@ -35,10 +35,18 @@ public protocol MeasuredNode {
     var size: CGSize { get }
     var positionedChildren: [(CGRect, MeasuredNode)] { get }
     func render(in view: UIView, origin: CGPoint)
+
+    var uiViews: [UIView] { get }
 }
 
 public protocol ShrinkableNode {}
 
 public protocol ShrinkContainer: ShrinkableNode {
     func unshrinkableSize(in context: LayoutContext) -> CGSize
+}
+
+extension MeasuredNode {
+    var uiViews: [UIView] {
+        positionedChildren.flatMap { $0.1.uiViews }
+    }
 }

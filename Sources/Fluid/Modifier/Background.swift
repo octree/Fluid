@@ -53,6 +53,10 @@ private struct MeasuredBackground: MeasuredNode {
         background.render(in: view, origin: origin)
         content.render(in: view, origin: origin)
     }
+
+    var uiViews: [UIView] {
+        content.uiViews + background.uiViews
+    }
 }
 
 extension BackgroundModifier: ShrinkContainer, ShrinkableNode where Content: ShrinkableNode {

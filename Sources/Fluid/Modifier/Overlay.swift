@@ -53,6 +53,10 @@ private struct MeasuredOverlay: MeasuredNode {
         content.render(in: view, origin: origin)
         overlay.render(in: view, origin: origin)
     }
+
+    var uiViews: [UIView] {
+        content.uiViews + overlay.uiViews
+    }
 }
 
 extension OverlayModifier: ShrinkContainer, ShrinkableNode where Content: ShrinkableNode {

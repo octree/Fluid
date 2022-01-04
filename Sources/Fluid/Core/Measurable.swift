@@ -57,7 +57,12 @@ struct MeasuredView<Body: UIView>: MeasuredNode {
         if body.superview !== view { view.addSubview(body) }
         body.frame = .init(origin: origin, size: size)
     }
+
     var positionedChildren: [(CGRect, MeasuredNode)] { [] }
+
+    var uiViews: [UIView] {
+        [body]
+    }
 }
 
 struct Measured: MeasuredNode {
@@ -72,5 +77,9 @@ struct Measured: MeasuredNode {
     func render(in view: UIView, origin: CGPoint) {
         let new = origin.moved(frame.origin)
         content.render(in: view, origin: new)
+    }
+
+    var uiViews: [UIView] {
+        content.uiViews
     }
 }

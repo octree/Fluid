@@ -78,6 +78,11 @@ struct TaggedMeasuredNode: MeasuredNode, TaggedNode {
         let frame = CGRect(origin: .zero, size: content.size)
         return [(frame, content)]
     }
+
+    @usableFromInline
+    var uiViews: [UIView] {
+        content.uiViews
+    }
 }
 
 public extension MeasurableNode {
