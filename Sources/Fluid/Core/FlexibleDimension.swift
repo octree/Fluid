@@ -37,6 +37,8 @@ public enum FlexibleDimension {
             return containerDimension == .infinity ? .infinity : x * containerDimension
         }
     }
+
+    public static var infinity: FlexibleDimension { .absolute(.infinity) }
 }
 
 extension FlexibleDimension: ExpressibleByFloatLiteral {

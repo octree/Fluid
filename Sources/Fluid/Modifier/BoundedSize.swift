@@ -28,42 +28,46 @@ import UIKit
 
 struct BoundedSize<Content: MeasurableNode>: MeasurableNode {
     var alignment: Alignment = .center
-    var minWidth: CGFloat?
-    var maxWidth: CGFloat?
-    var minHeight: CGFloat?
-    var maxHeight: CGFloat?
+    var minWidth: FlexibleDimension?
+    var maxWidth: FlexibleDimension?
+    var minHeight: FlexibleDimension?
+    var maxHeight: FlexibleDimension?
     var content: Content
 
     var children: [MeasurableNode] { [content] }
 
     func layout(using layoutContext: LayoutContext) -> MeasuredNode {
         let proposedSize = layoutContext.proposedSize
-        let minWidth = minWidth ?? 0
-        let maxWidth = max(minWidth, min(proposedSize.width, maxWidth ?? .infinity))
-        let minHeight = minHeight ?? 0
-        let maxHeight = max(minHeight, min(proposedSize.height, maxHeight ?? .infinity))
-        let measured = content.layout(using: .init(.init(width: maxWidth, height: maxHeight)))
+        let minWidth = self.minWidth?.dimension(in: proposedSize.width)
+        let maxWidth = self.maxWidth?.dimension(in: proposedSize.width)
+        let minHeight = self.minHeight?.dimension(in: proposedSize.height)
+        let maxHeight = self.maxHeight?.dimension(in: proposedSize.height)
+        let minW = minWidth ?? 0
+        let maxW = max(minW, min(proposedSize.width, maxWidth ?? .infinity))
+        let minH = minHeight ?? 0
+        let maxH = max(minH, min(proposedSize.height, maxHeight ?? .infinity))
+        let measured = content.layout(using: .init(.init(width: maxW, height: maxH)))
         var size = measured.size
-        size.width = max(minWidth, size.width)
-        size.height = max(minHeight, size.height)
-        if let width = self.maxWidth {
+        size.width = max(minW, size.width)
+        size.height = max(minH, size.height)
+        if let width = maxWidth {
             if width == .infinity, proposedSize.width != .infinity {
-                size.width = maxWidth
+                size.width = maxW
             } else {
-                size.width = min(maxWidth, size.width)
+                size.width = min(maxW, size.width)
             }
         }
 
-        if let height = self.maxHeight {
+        if let height = maxHeight {
             if height == .infinity, proposedSize.height != .infinity {
-                size.height = maxHeight
+                size.height = maxH
             } else {
-                size.height = min(maxHeight, size.height)
+                size.height = min(maxH, size.height)
             }
         }
 
-        if self.maxWidth == .infinity, proposedSize.width != .infinity { size.width = maxWidth }
-        if self.maxHeight == .infinity, proposedSize.height != .infinity { size.height = maxHeight }
+        if maxWidth == .infinity, proposedSize.width != .infinity { size.width = maxW }
+        if maxHeight == .infinity, proposedSize.height != .infinity { size.height = maxH }
         var frame = CGRect(origin: .zero, size: measured.size)
         frame.formAlign(to: .init(origin: .zero, size: size), alignment: alignment)
         return Measured(size: size, frame: frame, content: measured)
@@ -72,7 +76,9 @@ struct BoundedSize<Content: MeasurableNode>: MeasurableNode {
 
 extension BoundedSize: ShrinkContainer, ShrinkableNode where Content: ShrinkableNode {
     func unshrinkableSize(in context: LayoutContext) -> CGSize {
-        var size = CGSize(width: minWidth ?? 0, height: minHeight ?? 0)
+        let minWidth = self.minWidth?.dimension(in: context.proposedSize.width) ?? 0
+        let minHeight = self.minHeight?.dimension(in: context.proposedSize.height) ?? 0
+        var size = CGSize(width: minWidth, height: minHeight)
         guard let content = content as? ShrinkContainer else {
             return size
         }
@@ -84,7 +90,7 @@ extension BoundedSize: ShrinkContainer, ShrinkableNode where Content: Shrinkable
 }
 
 public extension MeasurableNode {
-    func frame(minWidth: CGFloat? = nil, maxWidth: CGFloat? = nil, minHeight: CGFloat? = nil, maxHeight: CGFloat? = nil, alignment: Alignment = .center) -> MeasurableNode {
+    func frame(minWidth: FlexibleDimension? = nil, maxWidth: FlexibleDimension? = nil, minHeight: FlexibleDimension? = nil, maxHeight: FlexibleDimension? = nil, alignment: Alignment = .center) -> MeasurableNode {
         return BoundedSize(alignment: alignment, minWidth: minWidth, maxWidth: maxWidth, minHeight: minHeight, maxHeight: maxHeight, content: self)
     }
 }
