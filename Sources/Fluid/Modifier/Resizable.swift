@@ -34,12 +34,9 @@ struct ResizableModifier<Content: UIView>: MeasurableNode {
         let proposedSize = layoutContext.proposedSize
         assert(proposedSize.width != .infinity, "Resizable width can not be infinity")
         assert(proposedSize.height != .infinity, "Resizable height can not be infinity")
-        let size = content.layout(using: layoutContext)
-        var frame = CGRect(origin: .zero, size: size)
+        var frame = CGRect(origin: .zero, size: proposedSize)
         frame.formAlign(to: .init(origin: .zero, size: proposedSize), alignment: Alignment.center)
-        return Measure.Measured(content: content, layout: size, body: { _, _ in
-            content
-        }, tag: nil)
+        return MeasuredView(size: proposedSize, body: content)
     }
 }
 

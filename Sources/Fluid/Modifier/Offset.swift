@@ -50,9 +50,3 @@ public extension MeasurableNode {
         OffsetModifier(offset: .init(x: x, y: y), content: self)
     }
 }
-
-public extension Measurable where Self: UIView {
-    func offset(x: CGFloat = 0, y: CGFloat = 0) -> MeasurableNode {
-        Measure(self) { _, _ in self }.offset(x: x, y: y)
-    }
-}

@@ -58,10 +58,6 @@ public enum MeasurableViewBuilder {
         [.node(expression)]
     }
 
-    public static func buildExpression<T: UIView>(_ expression: T) -> Component {
-        [.node(Measure(expression, body: { _, _ in expression }))]
-    }
-
     public static func buildExpression(_ expression: MeasurableCollection) -> Component {
         [.collection(expression)]
     }

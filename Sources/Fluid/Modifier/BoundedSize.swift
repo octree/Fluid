@@ -88,9 +88,3 @@ public extension MeasurableNode {
         return BoundedSize(alignment: alignment, minWidth: minWidth, maxWidth: maxWidth, minHeight: minHeight, maxHeight: maxHeight, content: self)
     }
 }
-
-public extension Measurable where Self: UIView {
-    func frame(minWidth: CGFloat? = nil, maxWidth: CGFloat? = nil, minHeight: CGFloat? = nil, maxHeight: CGFloat? = nil, alignment: Alignment = .center) -> MeasurableNode {
-        Measure(self) { _, _ in self }.frame(minWidth: minWidth, maxWidth: maxWidth, minHeight: minHeight, maxHeight: maxHeight, alignment: alignment)
-    }
-}

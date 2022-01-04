@@ -72,9 +72,3 @@ public extension MeasurableNode {
         return FixedSizeModifier(alignment: alignment, width: width, height: height, content: self)
     }
 }
-
-public extension Measurable where Self: UIView {
-    func frame(width: FlexibleDimension? = nil, height: FlexibleDimension? = nil, alignment: Alignment = .center) -> MeasurableNode {
-        Measure(self) { _, _ in self }.frame(width: width, height: height, alignment: alignment)
-    }
-}

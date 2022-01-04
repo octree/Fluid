@@ -49,55 +49,16 @@ public extension Measurable where Layout: SelfMeasured {
     }
 }
 
-public struct Measure<Content: Measurable, Body: UIView>: MeasurableNode {
-    public var children: [MeasurableNode] { [] }
-    public let content: Content
-    public let body: (Content, Content.Layout) -> Body
-    var tag: AnyHashable?
+struct MeasuredView<Body: UIView>: MeasuredNode {
+    let size: CGSize
+    let body: Body
 
-    public init(_ content: Content, body: @escaping (Content, Content.Layout) -> Body) {
-        self.content = content
-        self.body = body
+    func render(in view: UIView, origin: CGPoint) {
+        if body.superview !== view { view.addSubview(body) }
+        body.frame = .init(origin: origin, size: size)
     }
-
-    public func layout(using layoutContext: LayoutContext) -> MeasuredNode {
-        Measured(content: content,
-                 layout: content.layout(using: layoutContext),
-                 body: body,
-                 tag: tag)
-    }
-
-    struct Measured: MeasuredNode, TaggedNode {
-        let content: Content
-        let layout: Content.Layout
-        let body: (Content, Content.Layout) -> Body
-
-        let tag: AnyHashable?
-        var value: Any? {
-            tag == nil ? nil : layout
-        }
-
-        var size: CGSize { Content.size(for: layout) }
-
-        func render(in view: UIView, origin: CGPoint) {
-            let v = body(content, layout)
-            if v.superview !== view { view.addSubview(v) }
-            v.frame = .init(origin: origin, size: size)
-        }
-
-        var positionedChildren: [(CGRect, MeasuredNode)] { [] }
-    }
+    var positionedChildren: [(CGRect, MeasuredNode)] { [] }
 }
-
-public extension Measure {
-    func tagLayout<Tag: ValueTag>(_ tag: Tag) -> Measure where Tag.Value == Content.Layout {
-        var copy = self
-        copy.tag = tag
-        return copy
-    }
-}
-
-extension Measure: ShrinkableNode where Content: ShrinkableNode {}
 
 struct Measured: MeasuredNode {
     var size: CGSize

@@ -26,20 +26,19 @@
 
 import UIKit
 
-public struct AspectRatio: Measurable {
+struct AspectRatioModifier<Content: MeasurableNode>: MeasurableNode {
+    var children: [MeasurableNode] { [content] }
+
+    var content: Content
     /// Aspect ratio is width / height.
-    public var aspectRatio: CGFloat
+    var aspectRatio: CGFloat
 
-    public init(_ aspectRatio: CGFloat) {
-        self.aspectRatio = aspectRatio
-    }
-
-    public func layout(using layoutContext: LayoutContext) -> CGSize {
+    public func layout(using layoutContext: LayoutContext) -> MeasuredNode {
         var size = layoutContext.proposedSize
         if size.height == .infinity {
-            guard size.width != .infinity else {
+            if size.width != .infinity {
                 assertionFailure("A measurable view must have at least one side constrained.")
-                return .init(width: 100, height: 100)
+                size = .init(width: 100, height: 100)
             }
             size.height = size.width / aspectRatio
         } else if size.width == .infinity {
@@ -50,6 +49,19 @@ public struct AspectRatio: Measurable {
             size.height = min(derivedH, size.height)
             size.width = min(derivedW, size.width)
         }
-        return size
+
+        let measured = content.layout(using: LayoutContext(size))
+        var frame = CGRect(origin: .zero, size: size)
+        frame.formAlign(to: CGRect(origin: .zero, size: measured.size), alignment: Alignment.center)
+        return Measured(size: size, frame: frame, content: measured)
+    }
+}
+
+public extension MeasurableNode {
+    /// Create a measurable node with aspectRatio
+    /// - Parameter ratio: A floating point represents the ratio between width and height
+    /// - Returns: A measurable node
+    func aspectRatio(_ ratio: CGFloat) -> MeasurableNode {
+        AspectRatioModifier(content: self, aspectRatio: ratio)
     }
 }

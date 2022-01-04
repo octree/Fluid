@@ -69,9 +69,3 @@ public extension MeasurableNode {
         Padding(edges: edges, length: length, content: self)
     }
 }
-
-public extension Measurable where Self: UIView {
-    func padding(_ edges: Edge.Set = .all, _ length: CGFloat = 16) -> MeasurableNode {
-        Measure(self) { _, _ in self }.padding(edges, length)
-    }
-}

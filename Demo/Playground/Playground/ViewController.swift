@@ -74,11 +74,13 @@ class ViewController: UIViewController {
     var node: MeasurableNode {
         HStack(spacing: 16) {
             self.imageView
+                .resizable()
                 .aspectRatio(1)
                 .frame(width: 80)
                 .overlay {
                     self.editButton
-                        .flexible(width: 25%, height: 25%)
+                        .resizable()
+                        .frame(width: 25%, height: 25%)
                         .offset(x: -3, y: -3)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                 }
@@ -88,7 +90,8 @@ class ViewController: UIViewController {
             }
             Spacer()
             chevronImageView
-                .flexible(width: 20, height: 20)
+                .resizable()
+                .frame(width: 20, height: 20)
         }
         .padding()
         .background(backgroundView)

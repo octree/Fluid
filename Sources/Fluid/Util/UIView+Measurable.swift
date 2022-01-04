@@ -26,25 +26,23 @@
 
 import UIKit
 
-public extension UIView {
-    func flexible(width: FlexibleDimension, height: FlexibleDimension) -> MeasurableNode {
-        Measure(FlexibleSize(width: width, height: height)) { _, _ in self }
-    }
-
-    /// Create a measurable node with aspectRatio
-    /// - Parameter ratio: A floating point represents the ratio between width and height
-    /// - Returns: A measurable node
-    func aspectRatio(_ ratio: CGFloat) -> MeasurableNode {
-        Measure(AspectRatio(ratio)) { _, _ in self }
-    }
-}
-
-extension UIView: Measurable, ShrinkableNode {
-    public func layout(using layoutContext: LayoutContext) -> CGSize {
+extension UIView: ShrinkableNode {
+    private func layout(using layoutContext: LayoutContext) -> CGSize {
         if let label = self as? UILabel, label.numberOfLines == 1 {
             return label.textRect(forBounds: .init(origin: .zero, size: layoutContext.proposedSize),
                                   limitedToNumberOfLines: 1).size
         }
         return sizeThatFits(layoutContext.proposedSize)
+    }
+}
+
+extension UIView: MeasurableNode {
+    public func layout(using layoutContext: LayoutContext) -> MeasuredNode {
+        let size: CGSize = layout(using: layoutContext)
+        return MeasuredView(size: size, body: self)
+    }
+
+    public var children: [MeasurableNode] {
+        []
     }
 }

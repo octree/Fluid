@@ -1,10 +1,10 @@
 //
-//  FlexibleSize.swift
+//  FlexibleDimension.swift
 //  Fluid
 //
-//  Created by octree on 2021/12/30.
+//  Created by octree on 2022/1/4.
 //
-//  Copyright (c) 2021 Octree <octree@octree.me>
+//  Copyright (c) 2022 Octree <octree@octree.me>
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -39,26 +39,6 @@ public enum FlexibleDimension {
     }
 }
 
-public struct FlexibleSize: Measurable {
-    public var width: FlexibleDimension
-    public var height: FlexibleDimension
-
-    public init(width: FlexibleDimension, height: FlexibleDimension) {
-        self.width = width
-        self.height = height
-    }
-
-    public init(width: CGFloat, height: CGFloat) {
-        self.width = .absolute(width)
-        self.height = .absolute(height)
-    }
-
-    public func layout(using layoutContext: LayoutContext) -> CGSize {
-        return CGSize(width: width.dimension(in: layoutContext.proposedSize.width),
-                      height: height.dimension(in: layoutContext.proposedSize.height))
-    }
-}
-
 extension FlexibleDimension: ExpressibleByFloatLiteral {
     public typealias FloatLiteralType = Double
     public init(floatLiteral value: Double) {
@@ -75,7 +55,7 @@ extension FlexibleDimension: ExpressibleByIntegerLiteral {
 
 postfix operator %
 
-public postfix func %(_ value: CGFloat) -> FlexibleDimension {
+public postfix func % (_ value: CGFloat) -> FlexibleDimension {
     .flexible(value / 100)
 }
 

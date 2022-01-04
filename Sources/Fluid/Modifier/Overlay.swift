@@ -68,17 +68,8 @@ public extension MeasurableNode {
 
     func overlay(_ view: UIView) -> MeasurableNode {
         overlay {
-            Measure(FlexibleSize(width: .flexible(1), height: .flexible(1))) { _, _ in view }
+            view.resizable()
+                .frame(width: .flexible(1), height: .flexible(1))
         }
-    }
-}
-
-public extension Measurable where Self: UIView {
-    func overlay(_ node: () -> MeasurableNode) -> MeasurableNode {
-        Measure(self) { _, _ in self }.overlay(node)
-    }
-
-    func overlay(_ view: UIView) -> MeasurableNode {
-        Measure(self) { _, _ in self }.overlay(view)
     }
 }
