@@ -35,8 +35,11 @@ struct OverlayModifier<Content: MeasurableNode>: MeasurableNode {
     func layout(using layoutContext: LayoutContext) -> MeasuredNode {
         let node = content.layout(using: layoutContext)
         let overlay = self.overlay.layout(using: .init(node.size))
+        var frame = CGRect(origin: .zero, size: overlay.size)
+        frame.formAlign(to: .init(origin: .zero, size: node.size), alignment: Alignment.center)
         return MeasuredOverlay(size: node.size,
                                content: node,
+                               overlayOrigin: frame.origin,
                                overlay: overlay)
     }
 }
@@ -44,6 +47,7 @@ struct OverlayModifier<Content: MeasurableNode>: MeasurableNode {
 private struct MeasuredOverlay: MeasuredNode {
     var size: CGSize
     var content: MeasuredNode
+    var overlayOrigin: CGPoint
     var overlay: MeasuredNode
     var positionedChildren: [(CGRect, MeasuredNode)] {
         [(CGRect(origin: .zero, size: content.size), content)]
@@ -51,7 +55,7 @@ private struct MeasuredOverlay: MeasuredNode {
 
     func render(in view: UIView, origin: CGPoint) {
         content.render(in: view, origin: origin)
-        overlay.render(in: view, origin: origin)
+        overlay.render(in: view, origin: origin.moved(overlayOrigin))
     }
 
     var uiViews: [UIView] {

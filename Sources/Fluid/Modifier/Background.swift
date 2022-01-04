@@ -35,8 +35,11 @@ struct BackgroundModifier<Content: MeasurableNode>: MeasurableNode {
     func layout(using layoutContext: LayoutContext) -> MeasuredNode {
         let node = content.layout(using: layoutContext)
         let background = self.background.layout(using: .init(node.size))
+        var frame = CGRect(origin: .zero, size: background.size)
+        frame.formAlign(to: .init(origin: .zero, size: node.size), alignment: Alignment.center)
         return MeasuredBackground(size: node.size,
                                   content: node,
+                                  backgroundOrigin: frame.origin,
                                   background: background)
     }
 }
@@ -44,13 +47,14 @@ struct BackgroundModifier<Content: MeasurableNode>: MeasurableNode {
 private struct MeasuredBackground: MeasuredNode {
     var size: CGSize
     var content: MeasuredNode
+    var backgroundOrigin: CGPoint
     var background: MeasuredNode
     var positionedChildren: [(CGRect, MeasuredNode)] {
         [(CGRect(origin: .zero, size: content.size), content)]
     }
 
     func render(in view: UIView, origin: CGPoint) {
-        background.render(in: view, origin: origin)
+        background.render(in: view, origin: origin.moved(backgroundOrigin))
         content.render(in: view, origin: origin)
     }
 

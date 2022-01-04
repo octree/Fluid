@@ -37,11 +37,11 @@ public struct ViewDimensions {
     }
 
     public subscript(_ alignment: HorizontalAlignment) -> CGFloat {
-        alignment.anchorX(in: self)
+        explicit[alignment] ?? alignment.anchorX(in: self)
     }
 
     public subscript(_ alignment: VerticalAlignment) -> CGFloat {
-        alignment.anchorY(in: self)
+        explicit[alignment] ?? alignment.anchorY(in: self)
     }
 
     public subscript(explicit guide: HorizontalAlignment) -> CGFloat? {
