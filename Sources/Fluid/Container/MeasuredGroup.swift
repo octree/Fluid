@@ -1,10 +1,10 @@
 //
-//  ForIn.swift
+//  MeasuredGroup.swift
 //  Fluid
 //
-//  Created by octree on 2021/12/30.
+//  Created by octree on 2022/1/6.
 //
-//  Copyright (c) 2021 Octree <octree@octree.me>
+//  Copyright (c) 2022 Octree <octree@octree.me>
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -26,18 +26,13 @@
 
 import UIKit
 
-public struct MeasurableForEach: MeasurableCollection {
-    public let ids: [AnyHashable]
-    public let children: [MeasurableNode]
+struct MeasuredGroup: MeasuredNode {
+    let size: CGSize
+    var positionedChildren: [(CGRect, MeasuredNode)]
 
-    @inlinable
-    public init<ID: Hashable, D: Collection>(_ data: D, id: KeyPath<D.Element, ID>, body: (D.Element) -> MeasurableNode) {
-        self.ids = data.map { AnyHashable($0[keyPath: id]) }
-        self.children = data.map { body($0) }
-    }
-
-    @inlinable
-    public init<D: Collection>(_ data: D, body: (D.Element) -> MeasurableNode) where D.Element: Identifiable {
-        self = .init(data, id: \.id, body: body)
+    func render(in view: UIView, origin: CGPoint) {
+        positionedChildren.forEach {
+            $0.1.render(in: view, origin: origin.moved($0.0.origin))
+        }
     }
 }

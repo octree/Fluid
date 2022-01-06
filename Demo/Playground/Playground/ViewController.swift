@@ -71,6 +71,14 @@ class ViewController: UIViewController {
         return view
     }()
 
+    private var labels: [UILabel] = {
+        (0 ... 10).map { _ in
+            let label = UILabel()
+            label.text = "Lorem ipsum"
+            return label
+        }
+    }()
+
     var node: MeasurableNode {
         HStack(spacing: 16) {
             self.imageView

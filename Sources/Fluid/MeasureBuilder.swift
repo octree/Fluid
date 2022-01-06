@@ -83,10 +83,14 @@ public enum MeasurableViewBuilder {
     }
 
     public static func buildBlock(_ items: Component...) -> Component {
-        return items.flatMap { $0 }
+        items.flatMap { $0 }
     }
 
     public static func buildLimitedAvailability(_ component: Component) -> Component {
-        return component
+        component
+    }
+
+    public static func buildArray(_ components: [Component]) -> Component {
+        components.flatMap { $0 }
     }
 }

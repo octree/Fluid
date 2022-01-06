@@ -47,26 +47,6 @@ public struct Group: MeasurableCollection {
     }
 
     init(_ content: [Child]) {
-        precondition(content.count <= 10)
         self.content = content
-    }
-
-    public func measuredCollection(_ content: [(CGRect, MeasuredNode)]) -> MeasuredCollection {
-        MeasuredGroup(content)
-    }
-}
-
-private struct MeasuredGroup: MeasuredCollection {
-    var children: [(CGRect, MeasuredNode)]
-
-    init(_ children: [(CGRect, MeasuredNode)]) {
-        self.children = children
-    }
-
-    func render(in view: UIView, origin: CGPoint) {
-        children.forEach {
-            let new = origin.moved($0.0.origin)
-            $0.1.render(in: view, origin: new)
-        }
     }
 }

@@ -95,22 +95,7 @@ public struct ZStack: MeasurableNode {
     public func layout(using layoutContext: LayoutContext) -> MeasuredNode {
         let result = ZStackLayout(alignment: alignment, context: layoutContext)
             .layout(children)
-        let content = self.content.measuredCollection(result.children)
-        return MeasuredZStack(size: result.size, alignment: alignment, content: content)
-    }
-}
-
-private struct MeasuredZStack: MeasuredNode {
-    let size: CGSize
-    let alignment: Alignment
-    let content: MeasuredCollection
-
-    var positionedChildren: [(CGRect, MeasuredNode)] {
-        content.children
-    }
-
-    func render(in view: UIView, origin: CGPoint) {
-        content.render(in: view, origin: origin)
+        return MeasuredGroup(size: result.size, positionedChildren: result.children)
     }
 }
 

@@ -28,7 +28,6 @@ import UIKit
 
 public protocol MeasurableCollection {
     var children: [MeasurableNode] { get }
-    func measuredCollection(_ content: [(CGRect, MeasuredNode)]) -> MeasuredCollection
 }
 
 public protocol MeasuredCollection {

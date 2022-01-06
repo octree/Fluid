@@ -129,23 +129,7 @@ public struct VStack: MeasurableNode {
     public func layout(using layoutContext: LayoutContext) -> MeasuredNode {
         let result = VStackLayout(alignment: alignment, spacing: spacing, context: layoutContext)
             .layout(children)
-        let content = self.content.measuredCollection(result.children)
-        return MeasuredVStack(size: result.size, alignment: alignment, spacing: spacing, content: content)
-    }
-}
-
-private struct MeasuredVStack: MeasuredNode {
-    let size: CGSize
-    let alignment: HorizontalAlignment
-    let spacing: CGFloat
-    let content: MeasuredCollection
-
-    var positionedChildren: [(CGRect, MeasuredNode)] {
-        content.children
-    }
-
-    func render(in view: UIView, origin: CGPoint) {
-        content.render(in: view, origin: origin)
+        return MeasuredGroup(size: result.size, positionedChildren: result.children)
     }
 }
 
