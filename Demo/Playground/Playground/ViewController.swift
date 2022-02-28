@@ -27,7 +27,7 @@
 import UIKit
 import Fluid
 
-class ViewController: UIViewController {
+class FluidView: UIView, FluidContainer {
     private let imageView: UIImageView = {
         let im = UIImageView(image: UIImage(named: "Blue.jpg"))
         im.layer.masksToBounds = true
@@ -61,6 +61,7 @@ class ViewController: UIViewController {
         view.setImage(image, for: .normal)
         view.imageView?.contentMode = .scaleAspectFill
         view.tintColor = .systemRed
+        view.addTarget(self, action: #selector(increase), for: .touchUpInside)
         return view
     }()
 
@@ -71,15 +72,19 @@ class ViewController: UIViewController {
         return view
     }()
 
-    private var labels: [UILabel] = {
-        (0 ... 10).map { _ in
-            let label = UILabel()
-            label.text = "Lorem ipsum"
-            return label
-        }
+    let backgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        return view
     }()
 
-    var node: MeasurableNode {
+    @State private var count: Int = 0 {
+        didSet {
+            self.detailLabel.text = [String](repeating: "Lorem ", count: count).joined()
+        }
+    }
+
+    var body: MeasurableNode {
         HStack(spacing: 16) {
             self.imageView
                 .resizable()
@@ -105,19 +110,21 @@ class ViewController: UIViewController {
         .background(backgroundView)
     }
 
-    let backgroundView = UIView()
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        backgroundView.backgroundColor = UIColor(white: 0.95, alpha: 1)
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        renderFluid()
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        var size = view.frame.size
-        size.width -= 40
-        size.height -= 60
-        let measured = node.layout(using: .init(size))
-        measured.render(in: view, origin: .init(x: 20, y: 40))
+    @objc private func increase() {
+        count += 1
+    }
+}
+
+class ViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        let fluid = FluidView()
+        fluid.frame = view.frame.applying(.init(translationX: 0, y: 100))
+        view.addSubview(fluid)
     }
 }

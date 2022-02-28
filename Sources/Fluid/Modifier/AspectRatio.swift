@@ -36,7 +36,7 @@ struct AspectRatioModifier<Content: MeasurableNode>: MeasurableNode {
     public func layout(using layoutContext: LayoutContext) -> MeasuredNode {
         var size = layoutContext.proposedSize
         if size.height == .infinity {
-            if size.width != .infinity {
+            if size.width == .infinity {
                 assertionFailure("A measurable view must have at least one side constrained.")
                 size = .init(width: 100, height: 100)
             }
