@@ -1,8 +1,8 @@
 //
-//  State.swift
+//  Binding.swift
 //  Fluid
 //
-//  Created by octree on 2022/2/28.
+//  Created by octree on 2022/6/1.
 //
 //  Copyright (c) 2022 Octree <octree@octree.me>
 //
@@ -26,68 +26,41 @@
 
 import UIKit
 
-final class AnyLocation<Value> {
-    private var get: (() -> Value)!
-    private var set: ((Value) -> Void)!
-
-    var value: Value {
+@propertyWrapper
+public struct Binding<Value> {
+    public var wrappedValue: Value {
         get { get() }
         set { set(newValue) }
     }
 
-    init() {}
+    private var get: () -> Value
+    private var set: (Value) -> Void
 
-    func bind<T: AnyObject>(to instance: T, keyPath: ReferenceWritableKeyPath<T, Value>) {
-        get = { [unowned instance] in
-            instance[keyPath: keyPath]
-        }
-        set = { [unowned instance] in
-            instance[keyPath: keyPath] = $0
-        }
-    }
-}
-
-@propertyWrapper
-public struct State<Value> {
-    @available(*, unavailable,
-               message: "This property wrapper can only be applied to ``LegoContainer``")
-    public var wrappedValue: Value {
-        get { fatalError() }
-        // swiftlint: disable unused_setter_value
-        set { fatalError() }
-    }
-
-    private var location: AnyLocation<Value> = .init()
-    private var storage: Value
     public var projectedValue: Binding<Value> {
-        .init {
-            location.value
-        } set: {
-            location.value = $0
-        }
+        self
     }
 
     /// Create a property wrapper with initial value.
     /// - Parameter wrappedValue: The initial value.
-    public init(wrappedValue: Value) {
-        storage = wrappedValue
+    public init(get: @escaping () -> Value, set: @escaping (Value) -> Void) {
+        self.get = get
+        self.set = set
     }
 
-    public static subscript<T: AnyObject & FluidContainer>(
+    public static subscript<T>(
         _enclosingInstance instance: T,
         wrapped wrappedKeyPath: ReferenceWritableKeyPath<T, Value>,
-        storage storageKeyPath: ReferenceWritableKeyPath<T, State>
+        storage storageKeyPath: ReferenceWritableKeyPath<T, Binding>
     ) -> Value {
         get {
-            let state = instance[keyPath: storageKeyPath]
-            instance[keyPath: storageKeyPath].location.bind(to: instance, keyPath: wrappedKeyPath)
-            return state.storage
+            return instance[keyPath: storageKeyPath].get()
         }
         set {
-            instance[keyPath: storageKeyPath].storage = newValue
+            instance[keyPath: storageKeyPath].set(newValue)
             if let container = instance as? FluidView {
-                container.markFluidDirty()
+                container.renderFluid()
             }
         }
     }
 }
+
